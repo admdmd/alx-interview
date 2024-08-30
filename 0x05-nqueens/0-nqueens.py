@@ -1,66 +1,44 @@
 #!/usr/bin/python3
-""" This is a module for N queens NP problem.
-"""
+""" N queens """
+import sys
 
-if __name__ == '__main__':
 
-    import sys
+if len(sys.argv) > 2 or len(sys.argv) < 2:
+    print("Usage: nqueens N")
+    exit(1)
 
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-    try:
-        size = int(sys.argv[1])
-    except BaseException:
-        print("N must be a number")
-        sys.exit(1)
-    if size < 4:
-        print("N must be at least 4")
-        sys.exit(1)
+if not sys.argv[1].isdigit():
+    print("N must be a number")
+    exit(1)
 
-    def startSolve():
-        b = [[0 for j in range(size)] for i in range(size)]
-        checkRecursive(b, 0)
-        return
+if int(sys.argv[1]) < 4:
+    print("N must be at least 4")
+    exit(1)
 
-    def checkRecursive(b, c):
-        if (c == size):
-            solution(b)
-            return True
-        ret = False
-        for i in range(size):
-            if (checkPosition(b, i, c)):
-                b[i][c] = 1
-                ret = checkRecursive(b, c + 1) or ret
-                b[i][c] = 0
-        return ret
+n = int(sys.argv[1])
 
-    def checkPosition(b, r, c):
-        for i in range(c):
-            if (b[r][i]):
-                return False
-        i = r
-        j = c
-        while i >= 0 and j >= 0:
-            if(b[i][j]):
-                return False
-            i = i - 1
-            j = j - 1
-        i = r
-        j = c
-        while j >= 0 and i < size:
-            if(b[i][j]):
-                return False
-            i = i + 1
-            j = j - 1
-        return True
 
-    def solution(b):
-        solve = []
-        for i in range(size):
-            for j in range(size):
-                if(b[i][j] is 1):
-                    solve.append([i, j])
-        print(solve)
-        solve.clear()
-    startSolve()
+def queens(n, i=0, a=[], b=[], c=[]):
+    """ find possible positions """
+    if i < n:
+        for j in range(n):
+            if j not in a and i + j not in b and i - j not in c:
+                yield from queens(n, i + 1, a + [j], b + [i + j], c + [i - j])
+    else:
+        yield a
+
+
+def solve(n):
+    """ solve """
+    k = []
+    i = 0
+    for solution in queens(n, 0):
+        for s in solution:
+            k.append([i, s])
+            i += 1
+        print(k)
+        k = []
+        i = 0
+
+
+solve(n)
