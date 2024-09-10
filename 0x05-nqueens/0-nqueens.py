@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""  module for N queens problem.
+""" This is a module for the N queens NP problem.
 """
 
 if __name__ == '__main__':
@@ -11,7 +11,7 @@ if __name__ == '__main__':
         sys.exit(1)
     try:
         size = int(sys.argv[1])
-    except BaseException:
+    except ValueError:
         print("N must be a number")
         sys.exit(1)
     if size < 4:
@@ -19,48 +19,50 @@ if __name__ == '__main__':
         sys.exit(1)
 
     def startSolve():
-        b = [[0 for j in range(size)] for i in range(size)]
-        checkRecursive(b, 0)
+        board = [[0 for j in range(size)] for i in range(size)]
+        checkRecursive(board, 0)
         return
 
-    def checkRecursive(b, c):
-        if (c == size):
-            solution(b)
+    def checkRecursive(board, col):
+        if col == size:
+            solution(board)
             return True
         ret = False
-        for i in range(size):
-            if (checkPosition(b, i, c)):
-                b[i][c] = 1
-                ret = checkRecursive(b, c + 1) or ret
-                b[i][c] = 0
+        for row in range(size):
+            if checkPosition(board, row, col):
+                board[row][col] = 1
+                ret = checkRecursive(board, col + 1) or ret
+                board[row][col] = 0
         return ret
 
-    def checkPosition(b, r, c):
-        for i in range(c):
-            if (b[r][i]):
+    def checkPosition(board, row, col):
+        # Check this row on the left side
+        for i in range(col):
+            if board[row][i]:
                 return False
-        i = r
-        j = c
+        # Check upper diagonal on the left side
+        i, j = row, col
         while i >= 0 and j >= 0:
-            if(b[i][j]):
+            if board[i][j]:
                 return False
-            i = i - 1
-            j = j - 1
-        i = r
-        j = c
+            i -= 1
+            j -= 1
+        # Check lower diagonal on the left side
+        i, j = row, col
         while j >= 0 and i < size:
-            if(b[i][j]):
+            if board[i][j]:
                 return False
-            i = i + 1
-            j = j - 1
+            i += 1
+            j -= 1
         return True
 
-    def solution(b):
+    def solution(board):
         solve = []
         for i in range(size):
             for j in range(size):
-                if(b[i][j] is 1):
+                if board[i][j] == 1:
                     solve.append([i, j])
         print(solve)
-        solve.clear()
+
     startSolve()
+
